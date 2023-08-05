@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import '../styles/EmployeeList.css';
 
 export default function EmployeeList() {
@@ -6,7 +7,7 @@ export default function EmployeeList() {
 			<div id='employee-div' className='container'>
 				<h1>Current Employees</h1>
 				<table id='employee-table' className='display'></table>
-				<a href='index.html'>Home</a>
+				<Link to='/'>Home</Link>
 			</div>
 		</>
 	);
