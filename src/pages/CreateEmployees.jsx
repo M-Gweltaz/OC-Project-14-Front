@@ -18,6 +18,13 @@ export default function CreateEmployees() {
 		}));
 	};
 
+	const handleDatePickerChange = (date, fieldName) => {
+		setCreateEmployeeFormData((prevData) => ({
+			...prevData,
+			[fieldName]: date.toDate(),
+		}));
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -45,9 +52,9 @@ export default function CreateEmployees() {
 		setCreateEmployeeFormData({
 			firstName: '',
 			lastName: '',
-			startDate: '',
+			startDate: new Date(),
 			department: '',
-			dateOfBirth: '',
+			dateOfBirth: new Date(),
 			street: '',
 			city: '',
 			state: '',
@@ -72,7 +79,6 @@ export default function CreateEmployees() {
 						onChange={handleChange}
 						value={createEmployeeFormData.firstName}
 					/>
-
 					<label htmlFor='lastName'>Last Name</label>
 					<input
 						type='text'
@@ -81,25 +87,18 @@ export default function CreateEmployees() {
 						onChange={handleChange}
 						value={createEmployeeFormData.lastName}
 					/>
-
 					<label htmlFor='dateOfBirth'>Date of Birth</label>
-					<input
+					<DatePicker
 						id='dateOfBirth'
-						type='text'
-						name='dateOfBirth'
-						onChange={handleChange}
-						value={createEmployeeFormData.DateOfBirth}
+						value={createEmployeeFormData.dateOfBirth}
+						onChange={(date) => handleDatePickerChange(date, 'dateOfBirth')} // Use the new function for DatePicker
 					/>
-
 					<label htmlFor='startDate'>Start Date</label>
-					<input
+					<DatePicker
 						id='startDate'
-						type='text'
-						name='startDate'
-						onChange={handleChange}
 						value={createEmployeeFormData.startDate}
+						onChange={(date) => handleDatePickerChange(date, 'startDate')} // Use the new function for DatePicker
 					/>
-					<DatePicker />
 					<fieldset className='address'>
 						<legend>Address</legend>
 
@@ -138,7 +137,6 @@ export default function CreateEmployees() {
 							value={createEmployeeFormData.zipCode}
 						/>
 					</fieldset>
-
 					<label htmlFor='department'>Department</label>
 					<select name='department' id='department'>
 						<option>Sales</option>

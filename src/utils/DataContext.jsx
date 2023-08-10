@@ -244,15 +244,15 @@ export const DataProvider = ({ children }) => {
 	]);
 
 	const [createEmployeeFormData, setCreateEmployeeFormData] = useState({
-		firstName: '',
-		lastName: '',
-		startDate: '',
-		department: '',
-		dateOfBirth: '',
-		street: '',
-		city: '',
-		state: '',
-		zipCode: '',
+		firstName: null,
+		lastName: null,
+		startDate: null,
+		department: null,
+		dateOfBirth: null,
+		street: null,
+		city: null,
+		state: null,
+		zipCode: null,
 	});
 
 	return (
