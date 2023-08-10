@@ -2,13 +2,16 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import DataContext from '../utils/DataContext';
+import DropDownMenu from '../components/DropDownMenu';
 import { Employee } from '../models/Employee';
 import '../styles/CreateEmployees.css';
 
 export default function CreateEmployees() {
 	const { createEmployeeFormData, setCreateEmployeeFormData } =
 		useContext(DataContext);
-	console.log(createEmployeeFormData);
+
+	const { state } = useContext(DataContext);
+	const stateName = state.map((item) => item.name);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -16,6 +19,7 @@ export default function CreateEmployees() {
 			...prevData,
 			[name]: value,
 		}));
+		console.log(createEmployeeFormData);
 	};
 
 	const handleDatePickerChange = (date, fieldName) => {
@@ -23,10 +27,12 @@ export default function CreateEmployees() {
 			...prevData,
 			[fieldName]: date.toDate(),
 		}));
+		console.log(createEmployeeFormData);
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		console.log('SUBMIT LANDED');
 
 		const newEmployee = new Employee(
 			createEmployeeFormData.firstName,
@@ -40,21 +46,16 @@ export default function CreateEmployees() {
 			createEmployeeFormData.zipCode
 		);
 
-		console.log(newEmployee);
-
-		// Convert the newEmployee object to a JSON string
 		const newEmployeeJSON = JSON.stringify(newEmployee);
 
-		// Save the newEmployeeJSON in localStorage
 		localStorage.setItem('newEmployeeData', newEmployeeJSON);
 
-		// Reset the form after saving data
 		setCreateEmployeeFormData({
 			firstName: '',
 			lastName: '',
-			startDate: new Date(),
+			startDate: null,
 			department: '',
-			dateOfBirth: new Date(),
+			dateOfBirth: null,
 			street: '',
 			city: '',
 			state: '',
@@ -121,13 +122,12 @@ export default function CreateEmployees() {
 						/>
 
 						<label htmlFor='state'>State</label>
-						<select
-							name='state'
-							id='state'
-							onChange={handleChange}
-							value={createEmployeeFormData.state}
-						></select>
-
+						<DropDownMenu
+							listItems={stateName}
+							listName='state'
+							selectedValue={createEmployeeFormData.state}
+							eventListener={handleChange}
+						/>
 						<label htmlFor='zip-code'>Zip Code</label>
 						<input
 							id='zipCode'
@@ -138,13 +138,18 @@ export default function CreateEmployees() {
 						/>
 					</fieldset>
 					<label htmlFor='department'>Department</label>
-					<select name='department' id='department'>
-						<option>Sales</option>
-						<option>Marketing</option>
-						<option>Engineering</option>
-						<option>Human Resources</option>
-						<option>Legal</option>
-					</select>
+					<DropDownMenu
+						listItems={[
+							'Sales',
+							'Marketing',
+							'Engineering',
+							'Human Ressources',
+							'Legal',
+						]}
+						listName='department'
+						selectedValue={createEmployeeFormData.department}
+						eventListener={handleChange}
+					/>
 				</form>
 
 				<button onClick={handleSubmit}>Save</button>

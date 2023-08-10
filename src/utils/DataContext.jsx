@@ -1,5 +1,6 @@
 // context.js
 import { createContext, useState } from 'react';
+import PropTypes from 'prop-types';
 
 const DataContext = createContext({});
 
@@ -244,15 +245,15 @@ export const DataProvider = ({ children }) => {
 	]);
 
 	const [createEmployeeFormData, setCreateEmployeeFormData] = useState({
-		firstName: null,
-		lastName: null,
+		firstName: '',
+		lastName: '',
 		startDate: null,
-		department: null,
+		department: '',
 		dateOfBirth: null,
-		street: null,
-		city: null,
-		state: null,
-		zipCode: null,
+		street: '',
+		city: '',
+		state: '',
+		zipCode: '',
 	});
 
 	return (
@@ -267,6 +268,10 @@ export const DataProvider = ({ children }) => {
 			{children}
 		</DataContext.Provider>
 	);
+};
+
+DataProvider.propTypes = {
+	children: PropTypes.node.isRequired,
 };
 
 export default DataContext;
