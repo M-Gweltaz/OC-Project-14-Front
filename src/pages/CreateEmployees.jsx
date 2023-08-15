@@ -1,16 +1,25 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Link } from 'react-router-dom';
 import { useContext } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import DataContext from '../utils/DataContext';
-import DropDownMenu from '../components/DropDownMenu';
+import DropDownMenu from 'react-dropdownmenu-lib';
+import Header from '../components/Header';
+import BackgroundEffect from '../components/BackgroudEffect';
 import { Employee } from '../models/Employee';
+
 import '../styles/CreateEmployees.css';
 
 export default function CreateEmployees() {
-	const { createEmployeeFormData, setCreateEmployeeFormData } =
-		useContext(DataContext);
+	const {
+		createEmployeeFormData,
+		setCreateEmployeeFormData,
+		employeesDataList,
+		setEmployeesDataList,
+		state,
+		department,
+	} = useContext(DataContext);
 
-	const { state } = useContext(DataContext);
 	const stateName = state.map((item) => item.name);
 
 	const handleChange = (e) => {
@@ -22,17 +31,25 @@ export default function CreateEmployees() {
 		console.log(createEmployeeFormData);
 	};
 
+	function formatDateToString(date) {
+		console.log(date);
+		const day = String(date.$D).padStart(2, '0');
+		const month = String(date.$M + 1).padStart(2, '0');
+		const year = String(date.$y);
+
+		return `${month}/${day}/${year}`;
+	}
+
 	const handleDatePickerChange = (date, fieldName) => {
 		setCreateEmployeeFormData((prevData) => ({
 			...prevData,
-			[fieldName]: date.toDate(),
+			[fieldName]: formatDateToString(date),
 		}));
 		console.log(createEmployeeFormData);
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log('SUBMIT LANDED');
 
 		const newEmployee = new Employee(
 			createEmployeeFormData.firstName,
@@ -46,34 +63,41 @@ export default function CreateEmployees() {
 			createEmployeeFormData.zipCode
 		);
 
-		const newEmployeeJSON = JSON.stringify(newEmployee);
+		setEmployeesDataList([...employeesDataList, newEmployee]);
 
-		localStorage.setItem('newEmployeeData', newEmployeeJSON);
+		// Call toast to display a success message
+		toast.success('Employee created successfully!', {
+			position: 'top-right',
+			autoClose: 3000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+		});
 
+		// reseting the formData
 		setCreateEmployeeFormData({
 			firstName: '',
 			lastName: '',
 			startDate: null,
-			department: '',
+			department: department[0],
 			dateOfBirth: null,
 			street: '',
 			city: '',
-			state: '',
+			state: stateName[0].name,
 			zipCode: '',
 		});
 	};
 
 	return (
 		<>
-			<div className='title'>
-				<h1>HRnet</h1>
-			</div>
-			<div className='container'>
-				<Link to='/employee-list'>View Current Employees</Link>
-				<h2>Create Employee</h2>
-				<form action='#' id='create-employee'>
+			<Header />
+			<div className='createEmployeesContainer'>
+				<h1 className='createEmployeesContainer__Title'>Create Employee</h1>
+				<form action='#' className='createEmployeesForm' id='create-employee'>
 					<label htmlFor='firstName'>First Name</label>
 					<input
+						className='createEmployeesInput'
 						type='text'
 						id='firstName'
 						name='firstName'
@@ -82,6 +106,7 @@ export default function CreateEmployees() {
 					/>
 					<label htmlFor='lastName'>Last Name</label>
 					<input
+						className='createEmployeesInput'
 						type='text'
 						id='lastName'
 						name='lastName'
@@ -92,19 +117,22 @@ export default function CreateEmployees() {
 					<DatePicker
 						id='dateOfBirth'
 						value={createEmployeeFormData.dateOfBirth}
-						onChange={(date) => handleDatePickerChange(date, 'dateOfBirth')} // Use the new function for DatePicker
+						onChange={(date) => handleDatePickerChange(date, 'dateOfBirth')}
+						format='DD/MM/YYYY'
 					/>
 					<label htmlFor='startDate'>Start Date</label>
 					<DatePicker
 						id='startDate'
 						value={createEmployeeFormData.startDate}
-						onChange={(date) => handleDatePickerChange(date, 'startDate')} // Use the new function for DatePicker
+						onChange={(date) => handleDatePickerChange(date, 'startDate')}
+						format='DD/MM/YYYY'
 					/>
-					<fieldset className='address'>
-						<legend>Address</legend>
+					<fieldset className='address createEmployeesFieldset'>
+						<legend className='createEmployeesFieldset__title'>Address</legend>
 
 						<label htmlFor='street'>Street</label>
 						<input
+							className='createEmployeesInput'
 							id='street'
 							type='text'
 							name='street'
@@ -114,6 +142,7 @@ export default function CreateEmployees() {
 
 						<label htmlFor='city'>City</label>
 						<input
+							className='createEmployeesInput'
 							id='city'
 							type='text'
 							name='city'
@@ -127,9 +156,11 @@ export default function CreateEmployees() {
 							listName='state'
 							selectedValue={createEmployeeFormData.state}
 							eventListener={handleChange}
+							className='createEmployeesInput'
 						/>
 						<label htmlFor='zip-code'>Zip Code</label>
 						<input
+							className='createEmployeesInput'
 							id='zipCode'
 							type='number'
 							name='zipCode'
@@ -139,21 +170,19 @@ export default function CreateEmployees() {
 					</fieldset>
 					<label htmlFor='department'>Department</label>
 					<DropDownMenu
-						listItems={[
-							'Sales',
-							'Marketing',
-							'Engineering',
-							'Human Ressources',
-							'Legal',
-						]}
+						listItems={department}
 						listName='department'
 						selectedValue={createEmployeeFormData.department}
 						eventListener={handleChange}
+						className='createEmployeesInput'
 					/>
 				</form>
 
-				<button onClick={handleSubmit}>Save</button>
+				<button onClick={handleSubmit} className='createEmployeesBtn'>
+					Save
+				</button>
 			</div>
+			<BackgroundEffect />
 		</>
 	);
 }

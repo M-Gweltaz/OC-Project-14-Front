@@ -244,21 +244,35 @@ export const DataProvider = ({ children }) => {
 		},
 	]);
 
+	const [department, setDepartment] = useState([
+		'Sales',
+		'Marketing',
+		'Engineering',
+		'Human Ressources',
+		'Legal',
+	]);
+
 	const [createEmployeeFormData, setCreateEmployeeFormData] = useState({
 		firstName: '',
 		lastName: '',
 		startDate: null,
-		department: '',
+		department: department[0],
 		dateOfBirth: null,
 		street: '',
 		city: '',
-		state: '',
+		state: state[0].name,
 		zipCode: '',
 	});
+
+	const [employeesDataList, setEmployeesDataList] = useState([]);
 
 	return (
 		<DataContext.Provider
 			value={{
+				employeesDataList,
+				setEmployeesDataList,
+				department,
+				setDepartment,
 				state,
 				setState,
 				createEmployeeFormData,
