@@ -3,7 +3,7 @@ class Employee {
 		firstName,
 		lastName,
 		startDate,
-		departement,
+		department,
 		dateOfBirth,
 		street,
 		city,
@@ -13,7 +13,7 @@ class Employee {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.startDate = startDate;
-		this.departement = departement;
+		this.department = department;
 		this.dateOfBirth = dateOfBirth;
 		this.street = street;
 		this.city = city;

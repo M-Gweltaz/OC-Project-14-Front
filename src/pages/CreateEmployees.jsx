@@ -1,5 +1,5 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DataContext from '../utils/DataContext';
@@ -11,24 +11,31 @@ import { Employee } from '../models/Employee';
 import '../styles/CreateEmployees.css';
 
 export default function CreateEmployees() {
-	const {
-		createEmployeeFormData,
-		setCreateEmployeeFormData,
-		employeesDataList,
-		setEmployeesDataList,
-		state,
-		department,
-	} = useContext(DataContext);
+	const { employeesDataList, setEmployeesDataList, state, department } =
+		useContext(DataContext);
+
+	const [inputValues, setInputValues] = useState({
+		firstName: '',
+		lastName: '',
+		startDate: null,
+		department: department[0],
+		dateOfBirth: null,
+		street: '',
+		city: '',
+		state: state[0].name,
+		zipCode: '',
+	});
+	console.log(inputValues.state);
 
 	const stateName = state.map((item) => item.name);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
-		setCreateEmployeeFormData((prevData) => ({
+
+		setInputValues((prevData) => ({
 			...prevData,
 			[name]: value,
 		}));
-		console.log(createEmployeeFormData);
 	};
 
 	function formatDateToString(date) {
@@ -41,26 +48,27 @@ export default function CreateEmployees() {
 	}
 
 	const handleDatePickerChange = (date, fieldName) => {
-		setCreateEmployeeFormData((prevData) => ({
+		setInputValues((prevData) => ({
 			...prevData,
 			[fieldName]: formatDateToString(date),
 		}));
-		console.log(createEmployeeFormData);
 	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
+		console.log(inputValues.state);
+
 		const newEmployee = new Employee(
-			createEmployeeFormData.firstName,
-			createEmployeeFormData.lastName,
-			createEmployeeFormData.startDate,
-			createEmployeeFormData.department,
-			createEmployeeFormData.dateOfBirth,
-			createEmployeeFormData.street,
-			createEmployeeFormData.city,
-			createEmployeeFormData.state,
-			createEmployeeFormData.zipCode
+			inputValues.firstName,
+			inputValues.lastName,
+			inputValues.startDate,
+			inputValues.department,
+			inputValues.dateOfBirth,
+			inputValues.street,
+			inputValues.city,
+			inputValues.state,
+			inputValues.zipCode
 		);
 
 		setEmployeesDataList([...employeesDataList, newEmployee]);
@@ -76,7 +84,7 @@ export default function CreateEmployees() {
 		});
 
 		// reseting the formData
-		setCreateEmployeeFormData({
+		setInputValues({
 			firstName: '',
 			lastName: '',
 			startDate: null,
@@ -84,7 +92,7 @@ export default function CreateEmployees() {
 			dateOfBirth: null,
 			street: '',
 			city: '',
-			state: stateName[0].name,
+			state: state[0].name,
 			zipCode: '',
 		});
 	};
@@ -102,7 +110,7 @@ export default function CreateEmployees() {
 						id='firstName'
 						name='firstName'
 						onChange={handleChange}
-						value={createEmployeeFormData.firstName}
+						value={inputValues.firstName}
 					/>
 					<label htmlFor='lastName'>Last Name</label>
 					<input
@@ -111,19 +119,21 @@ export default function CreateEmployees() {
 						id='lastName'
 						name='lastName'
 						onChange={handleChange}
-						value={createEmployeeFormData.lastName}
+						value={inputValues.lastName}
 					/>
 					<label htmlFor='dateOfBirth'>Date of Birth</label>
 					<DatePicker
 						id='dateOfBirth'
-						value={createEmployeeFormData.dateOfBirth}
+						className='createEmployeesInput'
+						value={inputValues.dateOfBirth}
 						onChange={(date) => handleDatePickerChange(date, 'dateOfBirth')}
 						format='DD/MM/YYYY'
 					/>
 					<label htmlFor='startDate'>Start Date</label>
 					<DatePicker
 						id='startDate'
-						value={createEmployeeFormData.startDate}
+						className='createEmployeesInput'
+						value={inputValues.startDate}
 						onChange={(date) => handleDatePickerChange(date, 'startDate')}
 						format='DD/MM/YYYY'
 					/>
@@ -137,7 +147,7 @@ export default function CreateEmployees() {
 							type='text'
 							name='street'
 							onChange={handleChange}
-							value={createEmployeeFormData.street}
+							value={inputValues.street}
 						/>
 
 						<label htmlFor='city'>City</label>
@@ -147,14 +157,14 @@ export default function CreateEmployees() {
 							type='text'
 							name='city'
 							onChange={handleChange}
-							value={createEmployeeFormData.city}
+							value={inputValues.city}
 						/>
 
 						<label htmlFor='state'>State</label>
 						<DropDownMenu
 							listItems={stateName}
 							listName='state'
-							selectedValue={createEmployeeFormData.state}
+							selectedValue={inputValues.state}
 							eventListener={handleChange}
 							className='createEmployeesInput'
 						/>
@@ -165,14 +175,14 @@ export default function CreateEmployees() {
 							type='number'
 							name='zipCode'
 							onChange={handleChange}
-							value={createEmployeeFormData.zipCode}
+							value={inputValues.zipCode}
 						/>
 					</fieldset>
 					<label htmlFor='department'>Department</label>
 					<DropDownMenu
 						listItems={department}
 						listName='department'
-						selectedValue={createEmployeeFormData.department}
+						selectedValue={inputValues.department}
 						eventListener={handleChange}
 						className='createEmployeesInput'
 					/>

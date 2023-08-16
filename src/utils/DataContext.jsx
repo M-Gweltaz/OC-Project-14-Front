@@ -252,18 +252,6 @@ export const DataProvider = ({ children }) => {
 		'Legal',
 	]);
 
-	const [createEmployeeFormData, setCreateEmployeeFormData] = useState({
-		firstName: '',
-		lastName: '',
-		startDate: null,
-		department: department[0],
-		dateOfBirth: null,
-		street: '',
-		city: '',
-		state: state[0].name,
-		zipCode: '',
-	});
-
 	const [employeesDataList, setEmployeesDataList] = useState([]);
 
 	return (
@@ -275,8 +263,6 @@ export const DataProvider = ({ children }) => {
 				setDepartment,
 				state,
 				setState,
-				createEmployeeFormData,
-				setCreateEmployeeFormData,
 			}}
 		>
 			{children}

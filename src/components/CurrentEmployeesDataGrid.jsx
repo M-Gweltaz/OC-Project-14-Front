@@ -17,10 +17,8 @@ export default function CurrentEmployeesDataGrid() {
 		{ field: 'zipCode', headerName: 'Zip Code', width: 150 },
 	];
 
-	// const employeesData = JSON.parse(localStorage.getItem('employeesData'));
-	const employeesData = employeesDataList;
-
-	const formatedEmployeesData = employeesData.map((employee, index) => {
+	const formatedEmployeesData = employeesDataList.map((employee, index) => {
+		console.log(employee);
 		return {
 			id: index,
 			firstName: employee.firstName,
