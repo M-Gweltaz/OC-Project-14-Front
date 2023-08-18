@@ -1,5 +1,5 @@
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useForm } from 'react-hook-form';
@@ -44,7 +44,6 @@ export default function CreateEmployees() {
 	};
 
 	function formatDateToString(date) {
-		console.log(date);
 		const day = String(date.$D).padStart(2, '0');
 		const month = String(date.$M + 1).padStart(2, '0');
 		const year = String(date.$y);
@@ -60,28 +59,6 @@ export default function CreateEmployees() {
 	};
 
 	const onSubmit = () => {
-		if (
-			!inputValues.firstName ||
-			!inputValues.lastName ||
-			!inputValues.startDate ||
-			!inputValues.dateOfBirth ||
-			!inputValues.street ||
-			!inputValues.city ||
-			!inputValues.state ||
-			!inputValues.zipCode ||
-			!inputValues.department
-		) {
-			toast.error('Please fill out all fields.', {
-				position: 'top-right',
-				autoClose: 3000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-			});
-			return;
-		}
-
 		const newEmployee = new Employee(
 			inputValues.firstName,
 			inputValues.lastName,
@@ -120,16 +97,31 @@ export default function CreateEmployees() {
 		});
 	};
 
+	const formErrorHandling = (inputName) => {
+		return toast.warning(`Enter a ${inputName}`, {
+			position: 'top-right',
+			autoClose: 3000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+		});
+	};
+
+	useEffect(() => {
+		errors.firstName && formErrorHandling('First Name');
+		errors.lastName && formErrorHandling('Last Name');
+		errors.street && formErrorHandling('Street');
+		errors.city && formErrorHandling('City');
+		errors.zipCode && formErrorHandling('Zip code');
+	}, [errors]);
+
 	return (
 		<>
 			<Header />
 			<div className='createEmployeesContainer'>
 				<h1 className='createEmployeesContainer__Title'>Create Employee</h1>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className='createEmployeesForm'
-					id='create-employee'
-				>
+				<form className='createEmployeesForm' id='create-employee'>
 					<label htmlFor='firstName'>First Name</label>
 					<input
 						className={`createEmployeesInput ${
