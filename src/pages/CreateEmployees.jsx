@@ -2,12 +2,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useForm } from 'react-hook-form';
 import DataContext from '../utils/DataContext';
 import DropDownMenu from 'react-dropdownmenu-lib';
 import Header from '../components/Header';
 import BackgroundEffect from '../components/BackgroudEffect';
 import { Employee } from '../models/Employee';
-
 import '../styles/CreateEmployees.css';
 
 export default function CreateEmployees() {
@@ -25,7 +25,12 @@ export default function CreateEmployees() {
 		state: state[0].name,
 		zipCode: '',
 	});
-	console.log(inputValues.state);
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm();
 
 	const stateName = state.map((item) => item.name);
 
@@ -54,10 +59,28 @@ export default function CreateEmployees() {
 		}));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-
-		console.log(inputValues.state);
+	const onSubmit = () => {
+		if (
+			!inputValues.firstName ||
+			!inputValues.lastName ||
+			!inputValues.startDate ||
+			!inputValues.dateOfBirth ||
+			!inputValues.street ||
+			!inputValues.city ||
+			!inputValues.state ||
+			!inputValues.zipCode ||
+			!inputValues.department
+		) {
+			toast.error('Please fill out all fields.', {
+				position: 'top-right',
+				autoClose: 3000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+			});
+			return;
+		}
 
 		const newEmployee = new Employee(
 			inputValues.firstName,
@@ -102,29 +125,42 @@ export default function CreateEmployees() {
 			<Header />
 			<div className='createEmployeesContainer'>
 				<h1 className='createEmployeesContainer__Title'>Create Employee</h1>
-				<form action='#' className='createEmployeesForm' id='create-employee'>
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className='createEmployeesForm'
+					id='create-employee'
+				>
 					<label htmlFor='firstName'>First Name</label>
 					<input
-						className='createEmployeesInput'
+						className={`createEmployeesInput ${
+							errors.firstName ? 'wrongInput' : ''
+						}`}
 						type='text'
 						id='firstName'
-						name='firstName'
+						{...register('firstName', {
+							required: true,
+							pattern: `^[A-Za-z]+(?:[-' ][A-Za-z]+)*$`,
+						})}
 						onChange={handleChange}
 						value={inputValues.firstName}
 					/>
 					<label htmlFor='lastName'>Last Name</label>
 					<input
-						className='createEmployeesInput'
+						className={`createEmployeesInput ${
+							errors.lastName ? 'wrongInput' : ''
+						}`}
 						type='text'
 						id='lastName'
-						name='lastName'
+						{...register('lastName', {
+							required: true,
+							pattern: `^[A-Za-z]+(?:[-' ][A-Za-z]+)*$`,
+						})}
 						onChange={handleChange}
 						value={inputValues.lastName}
 					/>
 					<label htmlFor='dateOfBirth'>Date of Birth</label>
 					<DatePicker
 						id='dateOfBirth'
-						className='createEmployeesInput'
 						value={inputValues.dateOfBirth}
 						onChange={(date) => handleDatePickerChange(date, 'dateOfBirth')}
 						format='DD/MM/YYYY'
@@ -132,34 +168,38 @@ export default function CreateEmployees() {
 					<label htmlFor='startDate'>Start Date</label>
 					<DatePicker
 						id='startDate'
-						className='createEmployeesInput'
 						value={inputValues.startDate}
 						onChange={(date) => handleDatePickerChange(date, 'startDate')}
 						format='DD/MM/YYYY'
 					/>
 					<fieldset className='address createEmployeesFieldset'>
 						<legend className='createEmployeesFieldset__title'>Address</legend>
-
 						<label htmlFor='street'>Street</label>
 						<input
-							className='createEmployeesInput'
+							className={`createEmployeesInput ${
+								errors.street ? 'wrongInput' : ''
+							}`}
 							id='street'
 							type='text'
-							name='street'
+							{...register('street', {
+								required: true,
+							})}
 							onChange={handleChange}
 							value={inputValues.street}
 						/>
-
 						<label htmlFor='city'>City</label>
 						<input
-							className='createEmployeesInput'
+							className={`createEmployeesInput ${
+								errors.city ? 'wrongInput' : ''
+							}`}
 							id='city'
 							type='text'
-							name='city'
+							{...register('city', {
+								required: true,
+							})}
 							onChange={handleChange}
 							value={inputValues.city}
 						/>
-
 						<label htmlFor='state'>State</label>
 						<DropDownMenu
 							listItems={stateName}
@@ -170,10 +210,14 @@ export default function CreateEmployees() {
 						/>
 						<label htmlFor='zip-code'>Zip Code</label>
 						<input
-							className='createEmployeesInput'
+							className={`createEmployeesInput ${
+								errors.zipCode ? 'wrongInput' : ''
+							}`}
 							id='zipCode'
 							type='number'
-							name='zipCode'
+							{...register('zipCode', {
+								required: true,
+							})}
 							onChange={handleChange}
 							value={inputValues.zipCode}
 						/>
@@ -187,8 +231,11 @@ export default function CreateEmployees() {
 						className='createEmployeesInput'
 					/>
 				</form>
-
-				<button onClick={handleSubmit} className='createEmployeesBtn'>
+				<button
+					type='button'
+					onClick={handleSubmit(onSubmit)}
+					className='createEmployeesBtn'
+				>
 					Save
 				</button>
 			</div>

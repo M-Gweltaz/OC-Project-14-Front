@@ -49,9 +49,9 @@
 
 .createEmployeesInput {
 	border: none;
-	outline: 0.1em solid #c4c4c4;
 	border-radius: 4px;
 	height: 1.75em;
+	outline: 0.1em solid #c4c4c4;
 }
 
 .wrongInput {
